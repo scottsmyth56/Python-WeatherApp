@@ -19,3 +19,26 @@ conn = mysql.connector.connect(
     )
 
 cursor = conn.cursor()
+
+
+def displayMenu():
+
+    """ 
+    Inital Startu menu displayed to user. Giving user 
+    choices based on what actions they wish to perform
+    """
+    print("""
+    *Welcome to Python Weather App*
+    Choose an option to get started
+    
+    1. Login
+    2. Register
+    3. Quick search for Forecast
+
+    """)
+ 
+
+displayMenu()
+
+
+
