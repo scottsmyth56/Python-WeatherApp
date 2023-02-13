@@ -200,10 +200,10 @@ def display_user_home_menu(username):
     print(f"Welcome Back {username}")
     print("""
     \nChoose an option from the menu:
-    1. Add Favourite Location
-    2. View all Favourite Locations
-    3. Search Weather in Favourite Locations
-    4. Weather Search
+    1. Add Favourite Location.
+    2. Search Weather in Favourite Locations.
+    3. Current Weather Data with hourly interval.
+    4. 5 Day Forecast.
 
     """)
 
@@ -218,9 +218,10 @@ def display_user_home_menu(username):
     if choice == 1:
         add_favourite_location(username)
     elif choice == 2:
-        view_favourite_location(username)
+        view_favourite_location_weather(username)
     elif choice == 3:
-        search_weather_favourite_location(username)
+        # current_weather_hour_interval(username)
+        print("gg")
     elif choice == 4:
         print("Add method call")  # quick_search()
 
@@ -263,12 +264,31 @@ def add_favourite_location(username):
         print("Error while saving location", ex)
 
 
-def view_favourite_location(username):
-    print("view location test")
+def view_favourite_location_weather(username):
+    """
+    Allows logged in users to quickly view the weather in
+    favourite locations wihtout having to manual search again.
+    """
+    cursor.execute(
+        "SELECT Location, Lat, Lon FROM Locations" +
+        " WHERE username = %s", (username,))
+    fav_locations = cursor.fetchall()
 
+    if len(fav_locations) <= 0:
+        print(""" 
+        You have no saved locations.
+        Please add favourite locations to use this quick search feature""")
+        display_user_home_menu(username)
+    else:
+        print("Select a location:")
+        for i, location in enumerate(fav_locations):
+            print(f"{i+1}. {location[0]}")
 
-def search_weather_favourite_location(username):
-    print("search favourlite location test")
+        selected_index = int(input(
+            "Enter the number of the location" +
+            " you want to see the weather for: ")) - 1
+        selected_location = fav_locations[selected_index]
+        print(selected_location[1], selected_location[2])
 
 
 # geocode_location("Allen", "Belgium")
