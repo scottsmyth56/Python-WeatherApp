@@ -58,7 +58,7 @@ def validate_choice():
     elif choice == 2:
         register_user()
     elif choice == 3:
-        current_weather_search()
+        display_current_weather()
 
 
 def login():
@@ -114,15 +114,36 @@ def register_user():
         display_user_home_menu(username)
 
 
-def current_weather_search():
+def display_current_weather():
     """
     Displays live weather data for any location
     the user inputs if the input data is valid
     """
 
     location = input("Enter a Location: ")
-    country = input("Enter the country your location is in: ")
-    geocode_location(location, country)
+    country = input("""
+    *Enter the country your location is in.
+    For more accurate results enter the country code e.g IE = Ireland.*
+    Enter country: """)
+    coordinates = geocode_location(location, country)
+    print(f"Finding Current Weather in {location}, {country}")
+    current_weather_search(coordinates)
+
+
+def current_weather_search(coordinates):
+    lat = coordinates[0]
+    lon = coordinates[1]
+    url = (
+        f"https://api.openweathermap.org/data/3.0/onecall?lat={lat}&lon={lon}"
+        f"&exclude=minutely,hourly,daily&units=metric&appid={API_KEY}")
+    res = requests.get(url, timeout=60)
+    data = res.json()
+
+    temperature = data["current"]["temp"]
+    print(temperature)
+
+    description = data['current']['weather'][0]['description']
+    print("The weather description is:", description)
 
 
 def geocode_location(location, country_code):
@@ -143,13 +164,13 @@ def geocode_location(location, country_code):
         lat = data[0]["lat"]
         lon = data[0]["lon"]
         coordinates = (lat, lon)
-        print(coordinates)
         return coordinates
     else:
         print("""
         Unable to convert to Latitude & Longitude,
         Please try a different location
         """)
+        display_menu()
 
 
 def display_user_home_menu(username):
@@ -204,6 +225,6 @@ def search_weather_favourite_location(username):
     print("search favourlite location test")
 
 
-# geocode_location("Plovdiv", "Bulgaria")
-current_weather_search()
-#main()
+# geocode_location("Allen", "Belgium")
+display_current_weather()
+# main()
