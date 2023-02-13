@@ -119,7 +119,10 @@ def current_weather_search():
     Displays live weather data for any location
     the user inputs if the input data is valid
     """
-    # location = input("Enter a Location")
+
+    location = input("Enter a Location: ")
+    country = input("Enter the country your location is in: ")
+    geocode_location(location, country)
 
 
 def geocode_location(location, country_code):
@@ -144,8 +147,8 @@ def geocode_location(location, country_code):
         return coordinates
     else:
         print("""
-        Unable to convert to Latitude & Longitude, P
-        lease try a different location
+        Unable to convert to Latitude & Longitude,
+        Please try a different location
         """)
 
 
@@ -201,5 +204,6 @@ def search_weather_favourite_location(username):
     print("search favourlite location test")
 
 
-geocode_location("Clane", "IE")
-main()
+# geocode_location("Plovdiv", "Bulgaria")
+current_weather_search()
+#main()
