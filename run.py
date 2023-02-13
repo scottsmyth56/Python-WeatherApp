@@ -116,8 +116,24 @@ def quick_search():
 
 
 def display_user_home_menu(username):
- 
+
+    """
+     Displays logged in users home menu with 
+     choices to add new favourite locations,Search
+     weather in favourite locations, view locations and
+     General weather Search in any desired location
+    """
+    print(f"""
+    Welcome Back {username}
+    Choose an option from the menu:
+    1. Add Favourite Location
+    2. View all Favourite Locations
+    3. Search Weather in Favourite Locations
+    4. Weather Search
+
+    """)
     
+
 def _main_():
     display_menu()
 
