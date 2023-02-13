@@ -131,7 +131,7 @@ def display_current_weather():
 
 
 def current_weather_search(coordinates):
-    """ 
+    """
     Makes a call to the OpenweatherMap API
     for current weather data in a specifed location.
     Prints the data to the terminal.
@@ -144,23 +144,22 @@ def current_weather_search(coordinates):
         f"&exclude=minutely,hourly,daily&units=metric&appid={API_KEY}")
     res = requests.get(url, timeout=60)
     data = res.json()
-  
+
     temperature = data["current"]["temp"]
     wind_speed = data["current"]["wind_speed"]
     humidity = data["current"]["humidity"]
     pressure = data["current"]["pressure"]
     summary = data['current']['weather'][0]['main']
     description = data['current']['weather'][0]['description']
-   
     print(f"""
     Temperature-- {temperature} °C
     Summary -- {summary}
-    Description -- {description} 
+    Description -- {description}
     Wind Speed -- {wind_speed} m/s
     Humidity -- {humidity} %
     Pressure -- {pressure} hPa
     """)
-    
+
 
 def geocode_location(location, country_code):
     """
@@ -230,7 +229,37 @@ def main():
 
 
 def add_favourite_location(username):
-    print("jjdj")
+    """
+    Allows logged in users to save favourite locations
+    so they can easily search the weather forecast in those
+    locations instead of searching again
+    """
+    print("""
+    Enter Location and the  Location Country  to save as favourite location.
+    For Better Results add the Country Code instead of Full Country Name.
+    e.g ( IE = Ireland)
+    """)
+
+    location = input("Enter Location: ")
+    country = input("Enter Country or Country Code: ")
+    try:
+        coordinates = geocode_location(location, country)
+        lat = coordinates[0]
+        lon = coordinates[1]
+
+    except Exception as ex:
+        print("Error while recieving coordinates", ex)
+
+    try:
+        cursor.execute(
+                "INSERT INTO Locations (username, location, Lat, Lon)" +
+                "VALUES (%s, %s, %s, %s)",
+                (username, location, lat, lon))
+        conn.commit()
+        print(f"{location} in {country} was added to favourites succesfully")
+
+    except Exception as ex:
+        print("Error while saving location", ex)
 
 
 def view_favourite_location(username):
@@ -242,5 +271,5 @@ def search_weather_favourite_location(username):
 
 
 # geocode_location("Allen", "Belgium")
-display_current_weather()
-# main()
+# display_current_weather()
+main()
