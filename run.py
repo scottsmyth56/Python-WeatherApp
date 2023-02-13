@@ -60,8 +60,33 @@ def validate_choice():
 
 
 def login():
-    print("Test login call")
+    """
+     Checks for existing user in database, if user is 
+     found, the user enters password and logs in.
+     If the user doesn't exist error message is displayed 
+     prompting the user to try again or register.
+    """
 
+    username = input("Enter your username: ")
+    cursor.execute("SELECT * FROM User WHERE username = %s", (username,))
+    result = cursor.fetchone()
+
+    if result:
+        input_password = input("Enter your password: ")
+        print("Checking Credentials..")
+        cursor.execute(
+            "SELECT PASSWORD FROM User WHERE username = %s", (username,))
+        user_password = cursor.fetchone()
+        if input_password == user_password[0]:
+            print("Login SuccessFul")
+            display_user_home_menu(username)
+        else:
+            print("Incorrect password, please try again")
+            login()
+    else:
+        print("Username not found. Please try again or register.")
+        display_menu()
+        
 
 def register_user():
     """
@@ -79,7 +104,9 @@ def register_user():
         register_user()
     else:
         password = input("Enter a password: ")
-        cursor.execute("INSERT INTO User (username, password) VALUES (%s, %s)", (username, password))
+        cursor.execute(
+            "INSERT INTO User (username, password) VALUES (%s, %s)",
+            (username, password))
         conn.commit()
         print(f"{username} registered succesfully")
 
@@ -88,6 +115,9 @@ def quick_search():
     print("test quick search call")
 
 
+def display_user_home_menu(username):
+ 
+    
 def _main_():
     display_menu()
 
