@@ -61,9 +61,9 @@ def validate_choice():
 
 def login():
     """
-     Checks for existing user in database, if user is 
+     Checks for existing user in database, if user is
      found, the user enters password and logs in.
-     If the user doesn't exist error message is displayed 
+     If the user doesn't exist error message is displayed
      prompting the user to try again or register.
     """
 
@@ -86,7 +86,7 @@ def login():
     else:
         print("Username not found. Please try again or register.")
         display_menu()
-        
+
 
 def register_user():
     """
@@ -109,6 +109,7 @@ def register_user():
             (username, password))
         conn.commit()
         print(f"{username} registered succesfully")
+        display_user_home_menu(username)
 
 
 def quick_search():
@@ -118,24 +119,53 @@ def quick_search():
 def display_user_home_menu(username):
 
     """
-     Displays logged in users home menu with 
+     Displays logged in users home menu with
      choices to add new favourite locations,Search
      weather in favourite locations, view locations and
      General weather Search in any desired location
     """
-    print(f"""
-    Welcome Back {username}
-    Choose an option from the menu:
+    print(f"Welcome Back {username}")
+    print("""
+    \nChoose an option from the menu:
     1. Add Favourite Location
     2. View all Favourite Locations
     3. Search Weather in Favourite Locations
     4. Weather Search
 
     """)
-    
 
-def _main_():
+    try:
+        choice = int(input("Enter Choice:"))
+        if choice not in [1, 2, 3, 4]:
+            raise ValueError
+    except ValueError:
+        print("\nError: Input must be a number between 1-4,please try again")
+        display_menu()
+
+    if choice == 1:
+        add_favourite_location()
+    elif choice == 2:
+        view_favourite_location()
+    elif choice == 3:
+        search_weather_favourite_location()
+    elif choice == 4:
+        quick_search()
+
+
+def main():
     display_menu()
 
 
-_main_()
+def add_favourite_location():
+    print("add location test ")
+
+
+def view_favourite_location():
+    print("view location test")
+
+
+def search_weather_favourite_location():
+    print("search favourlite location test")
+
+
+main()
