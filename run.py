@@ -22,9 +22,8 @@ cursor = conn.cursor()
 
 
 def display_menu():
-
     """
-    Inital Startu menu displayed to user. Giving user 
+    Inital Startu menu displayed to user. Giving user
     choices based on what actions they wish to perform
     """
     print("""
@@ -40,7 +39,6 @@ def display_menu():
 
 
 def validate_choice():
-    
     """
     Checks the user choice for valid input
     Calls the requested action based on user choice
@@ -66,11 +64,28 @@ def login():
 
 
 def register_user():
-    print("Test register call")
+    """
+     Registers new user on the system with username and password
+    If user already exists, messages is displayed,
+    If user doesn't exist, the user is registered on the system
+    """
+
+    username = input(("Enter a username: "))
+    cursor.execute("SELECT * FROM User WHERE username = %s", (username,))
+    result = cursor.fetchone()
+
+    if result:
+        print("User already Exists Please Try a Different Username")
+        register_user()
+    else:
+        password = input("Enter a password: ")
+        cursor.execute("INSERT INTO User (username, password) VALUES (%s, %s)", (username, password))
+        conn.commit()
+        print(f"{username} registered succesfully")
 
 
 def quick_search():
-    print("test quick search call")3
+    print("test quick search call")
 
 
 def _main_():
