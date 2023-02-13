@@ -1,4 +1,5 @@
 import os
+import requests
 import mysql.connector
 from dotenv import load_dotenv
 
@@ -9,6 +10,7 @@ PASSWORD = os.environ.get("DB_PASSWORD")
 PORT = os.environ.get("DB_PORT")
 HOST = os.environ.get("DB_HOST")
 NAME = os.environ.get("DB_NAME")
+API_KEY = os.environ.get("API_KEY")
 
 conn = mysql.connector.connect(
     host=HOST,
@@ -32,7 +34,7 @@ def display_menu():
 
     1. Login
     2. Register
-    3. Quick search for Forecast
+    3. Curent Weather Forecast
 
     """)
     validate_choice()
@@ -56,7 +58,7 @@ def validate_choice():
     elif choice == 2:
         register_user()
     elif choice == 3:
-        quick_search()
+        current_weather_search()
 
 
 def login():
@@ -112,8 +114,39 @@ def register_user():
         display_user_home_menu(username)
 
 
-def quick_search():
-    print("test quick search call")
+def current_weather_search():
+    """
+    Displays live weather data for any location
+    the user inputs if the input data is valid
+    """
+    # location = input("Enter a Location")
+
+
+def geocode_location(location, country_code):
+    """
+    Converts Location by name and Country code to
+    Latitude and Longitude Coordinates for use in
+    Weather API calls
+    """
+
+    url = (
+        f"http://api.openweathermap.org/geo/1.0/direct?q={location},"
+        f"{country_code}&limit=1&appid={API_KEY}")
+
+    res = requests.get(url, timeout=60)
+    data = res.json()
+
+    if len(data) > 0:
+        lat = data[0]["lat"]
+        lon = data[0]["lon"]
+        coordinates = (lat, lon)
+        print(coordinates)
+        return coordinates
+    else:
+        print("""
+        Unable to convert to Latitude & Longitude, P
+        lease try a different location
+        """)
 
 
 def display_user_home_menu(username):
@@ -143,29 +176,30 @@ def display_user_home_menu(username):
         display_menu()
 
     if choice == 1:
-        add_favourite_location()
+        add_favourite_location(username)
     elif choice == 2:
-        view_favourite_location()
+        view_favourite_location(username)
     elif choice == 3:
-        search_weather_favourite_location()
+        search_weather_favourite_location(username)
     elif choice == 4:
-        quick_search()
+        print("Add method call")  # quick_search()
 
 
 def main():
     display_menu()
 
 
-def add_favourite_location():
-    print("add location test ")
+def add_favourite_location(username):
+    print("jjdj")
 
 
-def view_favourite_location():
+def view_favourite_location(username):
     print("view location test")
 
 
-def search_weather_favourite_location():
+def search_weather_favourite_location(username):
     print("search favourlite location test")
 
 
+geocode_location("Clane", "IE")
 main()
