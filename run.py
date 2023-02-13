@@ -131,6 +131,12 @@ def display_current_weather():
 
 
 def current_weather_search(coordinates):
+    """ 
+    Makes a call to the OpenweatherMap API
+    for current weather data in a specifed location.
+    Prints the data to the terminal.
+    """
+
     lat = coordinates[0]
     lon = coordinates[1]
     url = (
@@ -138,13 +144,23 @@ def current_weather_search(coordinates):
         f"&exclude=minutely,hourly,daily&units=metric&appid={API_KEY}")
     res = requests.get(url, timeout=60)
     data = res.json()
-
+  
     temperature = data["current"]["temp"]
-    print(temperature)
-
+    wind_speed = data["current"]["wind_speed"]
+    humidity = data["current"]["humidity"]
+    pressure = data["current"]["pressure"]
+    summary = data['current']['weather'][0]['main']
     description = data['current']['weather'][0]['description']
-    print("The weather description is:", description)
-
+   
+    print(f"""
+    Temperature-- {temperature} °C
+    Summary -- {summary}
+    Description -- {description} 
+    Wind Speed -- {wind_speed} m/s
+    Humidity -- {humidity} %
+    Pressure -- {pressure} hPa
+    """)
+    
 
 def geocode_location(location, country_code):
     """
