@@ -30,15 +30,28 @@ def displayMenu():
     print("""
     *Welcome to Python Weather App*
     Choose an option to get started
-    
+
     1. Login
     2. Register
     3. Quick search for Forecast
 
     """)
- 
 
+    try:
+        choice = input("Enter Choice:")
+        choice = int(choice)
+        if choice not in [1, 2, 3]:
+            raise ValueError
+            # displayMenu()
+        return choice
+    except ValueError:
+        print("\nError: Input must be a number between 1-3,please try again")
+        displayMenu()
+
+
+
+
+# def _main_():
 displayMenu()
-
 
 
