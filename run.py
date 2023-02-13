@@ -21,9 +21,9 @@ conn = mysql.connector.connect(
 cursor = conn.cursor()
 
 
-def displayMenu():
+def display_menu():
 
-    """ 
+    """
     Inital Startu menu displayed to user. Giving user 
     choices based on what actions they wish to perform
     """
@@ -36,22 +36,45 @@ def displayMenu():
     3. Quick search for Forecast
 
     """)
+    validate_choice()
 
+
+def validate_choice():
+    
+    """
+    Checks the user choice for valid input
+    Calls the requested action based on user choice
+    """
     try:
-        choice = input("Enter Choice:")
-        choice = int(choice)
+        choice = int(input("Enter Choice:"))
         if choice not in [1, 2, 3]:
             raise ValueError
-            # displayMenu()
-        return choice
     except ValueError:
         print("\nError: Input must be a number between 1-3,please try again")
-        displayMenu()
+        display_menu()
+
+    if choice == 1:
+        login()
+    elif choice == 2:
+        register_user()
+    elif choice == 3:
+        quick_search()
 
 
+def login():
+    print("Test login call")
 
 
-# def _main_():
-displayMenu()
+def register_user():
+    print("Test register call")
 
 
+def quick_search():
+    print("test quick search call")3
+
+
+def _main_():
+    display_menu()
+
+
+_main_()
