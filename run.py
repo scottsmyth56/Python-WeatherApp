@@ -167,24 +167,25 @@ def geocode_location(location, country_code):
     Latitude and Longitude Coordinates for use in
     Weather API calls
     """
+    try:
+        url = (
+            f"http://api.openweathermap.org/geo/1.0/direct?q={location},"
+            f"{country_code}&limit=1&appid={API_KEY}")
 
-    url = (
-        f"http://api.openweathermap.org/geo/1.0/direct?q={location},"
-        f"{country_code}&limit=1&appid={API_KEY}")
+        res = requests.get(url, timeout=60)
+        data = res.json()
 
-    res = requests.get(url, timeout=60)
-    data = res.json()
+        if len(data) > 0:
+            lat = data[0]["lat"]
+            lon = data[0]["lon"]
+            coordinates = (lat, lon)
+            return coordinates
+        else:
+            print("Unable to convert coordinates, Please Try Again")
+            display_menu()
 
-    if len(data) > 0:
-        lat = data[0]["lat"]
-        lon = data[0]["lon"]
-        coordinates = (lat, lon)
-        return coordinates
-    else:
-        print("""
-        Unable to convert to Latitude & Longitude,
-        Please try a different location
-        """)
+    except requests.exceptions.HTTPError as ex:
+        print("An error occurred while making the API request:", ex)
         display_menu()
 
 
@@ -258,7 +259,7 @@ def add_favourite_location(username):
         conn.commit()
         print(f"{location} in {country} was added to favourites succesfully")
 
-    except Exception as ex:
+    except mysql.connector.Error as ex:
         print("Error while saving location", ex)
 
 
