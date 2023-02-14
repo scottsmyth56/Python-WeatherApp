@@ -2,6 +2,7 @@ import os
 import requests
 import mysql.connector
 from dotenv import load_dotenv
+from datetime import datetime
 
 load_dotenv()
 
@@ -262,6 +263,7 @@ def add_favourite_location(username):
 
     except mysql.connector.Error as ex:
         print("Error while saving location", ex)
+    display_user_home_menu(username)
 
 
 def view_favourite_location_weather(username):
@@ -281,16 +283,60 @@ def view_favourite_location_weather(username):
         display_user_home_menu(username)
     else:
         print("Select a location:")
-        for i, location in enumerate(fav_locations):
-            print(f"{i+1}. {location[0]}")
+        for i, loc in enumerate(fav_locations):
+            print(f"{i+1}. {loc[0]}")
 
         selected_index = int(input(
             "Enter the number of the location" +
             " you want to see the weather for: ")) - 1
         selected_location = fav_locations[selected_index]
-        print(selected_location[1], selected_location[2])
+      
+        
+        # choice 1 - hourly, 2 - 5 day forecast
+        # call the hourly forecat (selected_location[1], selected_location[2])
 
 
-# geocode_location("Allen", "Belgium")
-# display_current_weather()
-main()
+def hourly_interval_forecast(coordinates):
+    """
+    Displays, weather forecast in hourly intervals.
+    Displays it for 12 hours ahead in the desired
+    location from user input
+    """
+
+    lat = coordinates[0]
+    lon = coordinates[1]
+    url = (
+        f"https://api.openweathermap.org/data/3.0/onecall?lat={lat}"
+        f"&lon={lon}&exclude=minutely,daily,current&units=metric"
+        f"&appid={API_KEY}")
+
+    res = requests.get(url, timeout=60)
+    data = res.json()
+    
+    hourly_data = data["hourly"][0:12]
+
+    for hourly in hourly_data:
+        timestamp = datetime.fromtimestamp(hourly["dt"])
+        temperature = hourly["temp"]
+        description = hourly["weather"][0]["description"]
+        wind_speed = hourly["wind_speed"]
+        humidity = hourly["humidity"]
+        pressure = hourly["pressure"]
+        description = description.title()
+        
+        print(f"""
+            {timestamp.strftime('%H:%M')}:
+            {description},
+            Temperature -- {temperature} °C
+            Wind Speed -- {wind_speed} m/s
+            Humidity -- {humidity} %
+            Pressure -- {pressure} hPa
+            """)
+
+
+coordinates = (53.29057755, -6.690264241654917)
+
+
+hourly_interval_forecast(coordinates)
+ # main()
+
