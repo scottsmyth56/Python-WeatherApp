@@ -227,7 +227,9 @@ def display_user_home_menu(username):
         coordinates = geocode_location(location[0], location[1])
         hourly_interval_forecast(coordinates)
     elif choice == 4:
-        print("Add method call")  # quick_search()
+        location = enter_location()
+        coordinates = geocode_location(location[0], location[1])
+        five_day_forecast(coordinates)
 
 
 def enter_location():
@@ -245,7 +247,7 @@ def enter_location():
     location_tuple = (location, country)
     return location_tuple
     
-    
+
 def main():
     """
     Program run function
