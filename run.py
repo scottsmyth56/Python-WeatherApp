@@ -1,8 +1,9 @@
 import os
+from datetime import datetime
 import requests
 import mysql.connector
 from dotenv import load_dotenv
-from datetime import datetime
+
 
 load_dotenv()
 
@@ -205,6 +206,7 @@ def display_user_home_menu(username):
     2. Search Weather in Favourite Locations.
     3. Current Weather Data with hourly interval.
     4. 5 Day Forecast.
+    5. Change Password.
 
     """)
 
@@ -228,6 +230,9 @@ def display_user_home_menu(username):
 
 
 def main():
+    """
+    Program run function
+    """
     display_menu()
 
 
@@ -277,7 +282,7 @@ def view_favourite_location_weather(username):
     fav_locations = cursor.fetchall()
 
     if len(fav_locations) <= 0:
-        print(""" 
+        print("""
         You have no saved locations.
         Please add favourite locations to use this quick search feature""")
         display_user_home_menu(username)
@@ -291,33 +296,32 @@ def view_favourite_location_weather(username):
             " you want to see the weather for: ")) - 1
         selected_location = fav_locations[selected_index]
         coordinates = (selected_location[1], selected_location[2])
+
         try:
             choice = int(input("""
                 *Choose Your Desired Forecast*
                 1. Hourly Forecast for 12 Hours.
                 2. 5 Day Forecast.
-            \n"""))
-    
+            """))
+
             if choice not in [1, 2]:
                 raise ValueError
-        
+
         except ValueError:
             print("\nError: Your Choice must be either 1 or 2 and not a character,please try again")
             view_favourite_location_weather(username)
-        
+
         if choice == 1:
             print(f"Finding Hourly Forecast for: {selected_location[0]} ")
             hourly_interval_forecast(coordinates)
         elif choice == 2:
             print(f"Finding 5 Day Forecast for: {selected_location[0]} ")
             five_day_forecast(coordinates)
-        
-        
-        # call the hourly forecat (selected_location[1], selected_location[2])
 
 
 def hourly_interval_forecast(coordinates):
     """
+    Calls to the OpenWeather Map API and
     Displays, weather forecast in hourly intervals.
     Displays it for 12 hours ahead in the desired
     location from user input
@@ -332,7 +336,7 @@ def hourly_interval_forecast(coordinates):
 
     res = requests.get(url, timeout=60)
     data = res.json()
-    
+
     hourly_data = data["hourly"][0:12]
 
     for hourly in hourly_data:
@@ -343,7 +347,7 @@ def hourly_interval_forecast(coordinates):
         humidity = hourly["humidity"]
         pressure = hourly["pressure"]
         description = description.title()
-        
+
         print(f"""
             {timestamp.strftime('%H:%M')}:
             {description},
@@ -354,9 +358,42 @@ def hourly_interval_forecast(coordinates):
             """)
 
 
-coordinates = (53.29057755, -6.690264241654917)
+def five_day_forecast(coordinates):
+    """
+    Calls to the Openweather Map API and
+    Displays a 5 day weather forecast for
+    the specified location.
+    """
+    lat = coordinates[0]
+    lon = coordinates[1]
+
+    url = (
+        f"https://api.openweathermap.org/data/3.0/onecall?lat={lat}"
+        f"&lon={lon}&exclude=minutely,hourly,current&units=metric"
+        f"&appid={API_KEY}")
+
+    res = requests.get(url, timeout=60)
+    data = res.json()
+
+    daily_data = data["daily"][0:5]
+
+    for day in daily_data:
+        timestamp = datetime.fromtimestamp(day["dt"])
+        temperature = day["temp"]
+        description = day["weather"][0]["description"]
+        wind_speed = day["wind_speed"]
+        humidity = day["humidity"]
+        pressure = day["pressure"]
+        description = description.title()
+
+        print(f"""
+            {timestamp.strftime('%A')}:
+            {description},
+            Temperature -- {temperature} °C
+            Wind Speed -- {wind_speed} m/s
+            Humidity -- {humidity} %
+            Pressure -- {pressure} hPa
+            """)
 
 
- # hourly_interval_forecast(coordinates)
 main()
-
