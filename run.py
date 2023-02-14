@@ -290,9 +290,29 @@ def view_favourite_location_weather(username):
             "Enter the number of the location" +
             " you want to see the weather for: ")) - 1
         selected_location = fav_locations[selected_index]
-      
+        coordinates = (selected_location[1], selected_location[2])
+        try:
+            choice = int(input("""
+                *Choose Your Desired Forecast*
+                1. Hourly Forecast for 12 Hours.
+                2. 5 Day Forecast.
+            \n"""))
+    
+            if choice not in [1, 2]:
+                raise ValueError
         
-        # choice 1 - hourly, 2 - 5 day forecast
+        except ValueError:
+            print("\nError: Your Choice must be either 1 or 2 and not a character,please try again")
+            view_favourite_location_weather(username)
+        
+        if choice == 1:
+            print(f"Finding Hourly Forecast for: {selected_location[0]} ")
+            hourly_interval_forecast(coordinates)
+        elif choice == 2:
+            print(f"Finding 5 Day Forecast for: {selected_location[0]} ")
+            five_day_forecast(coordinates)
+        
+        
         # call the hourly forecat (selected_location[1], selected_location[2])
 
 
@@ -337,6 +357,6 @@ def hourly_interval_forecast(coordinates):
 coordinates = (53.29057755, -6.690264241654917)
 
 
-hourly_interval_forecast(coordinates)
- # main()
+ # hourly_interval_forecast(coordinates)
+main()
 
