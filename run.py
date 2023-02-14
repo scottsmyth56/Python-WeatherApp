@@ -379,7 +379,10 @@ def five_day_forecast(coordinates):
 
     for day in daily_data:
         timestamp = datetime.fromtimestamp(day["dt"])
-        temperature = day["temp"]
+        morning_temp = day["temp"]["morn"]
+        day_temp = day["temp"]["day"]
+        night_temp = day["temp"]["night"]
+        eve_temp = day["temp"]["eve"]
         description = day["weather"][0]["description"]
         wind_speed = day["wind_speed"]
         humidity = day["humidity"]
@@ -389,7 +392,11 @@ def five_day_forecast(coordinates):
         print(f"""
             {timestamp.strftime('%A')}:
             {description},
-            Temperature -- {temperature} °C
+            Temperature: 
+                Morning -- {morning_temp} °C
+                Day -- {day_temp} °C
+                Evening -- {eve_temp} °C
+                Night -- {night_temp} °C
             Wind Speed -- {wind_speed} m/s
             Humidity -- {humidity} %
             Pressure -- {pressure} hPa
