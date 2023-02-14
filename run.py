@@ -36,7 +36,7 @@ def display_menu():
 
     1. Login
     2. Register
-    3. Curent Weather Forecast
+    3. Current Weather Forecast
 
     """)
     validate_choice()
@@ -82,7 +82,7 @@ def login():
             "SELECT PASSWORD FROM User WHERE username = %s", (username,))
         user_password = cursor.fetchone()
         if input_password == user_password[0]:
-            print("Login SuccessFul")
+            print("Login Successfull")
             display_user_home_menu(username)
         else:
             print("Incorrect password, please try again")
@@ -126,7 +126,7 @@ def display_current_weather():
     country = input("""
     *Enter the country your location is in.
     For more accurate results enter the country code e.g IE = Ireland.*
-    Enter country: """)
+    Enter Country: """)
     coordinates = geocode_location(location, country)
     print(f"Finding Current Weather in {location}, {country}")
     current_weather_search(coordinates)
@@ -200,7 +200,7 @@ def display_user_home_menu(username):
      General weather Search in any desired location
     """
     print(f"Welcome Back {username}")
-    print("""
+    print(""" 
     \nChoose an option from the menu:
     1. Add Favourite Location.
     2. Search Weather in Favourite Locations.
@@ -223,12 +223,29 @@ def display_user_home_menu(username):
     elif choice == 2:
         view_favourite_location_weather(username)
     elif choice == 3:
-        # current_weather_hour_interval(username)
-        print("gg")
+        location = enter_location()
+        coordinates = geocode_location(location[0], location[1])
+        hourly_interval_forecast(coordinates)
     elif choice == 4:
         print("Add method call")  # quick_search()
 
 
+def enter_location():
+    """
+    Takes the location name and country 
+    from the user and returns them as a tuple
+    """
+
+    location = input("Enter a Location: ")
+    country = input("""
+    *Enter the country your location is in.
+    For more accurate results enter the country code e.g IE = Ireland.*
+    Enter Country: """)
+
+    location_tuple = (location, country)
+    return location_tuple
+    
+    
 def main():
     """
     Program run function
@@ -308,7 +325,9 @@ def view_favourite_location_weather(username):
                 raise ValueError
 
         except ValueError:
-            print("\nError: Your Choice must be either 1 or 2 and not a character,please try again")
+            print(
+                "\nError: Your Choice must be either" +
+                "1 or 2 and not a character,please try again")
             view_favourite_location_weather(username)
 
         if choice == 1:
@@ -392,7 +411,7 @@ def five_day_forecast(coordinates):
         print(f"""
             {timestamp.strftime('%A')}:
             {description},
-            Temperature: 
+            Temperature:
                 Morning -- {morning_temp} °C
                 Day -- {day_temp} °C
                 Evening -- {eve_temp} °C
