@@ -69,6 +69,7 @@ def validate_choice():
     elif choice == 4:
         location = enter_location()
         coordinates = geocode_location(location[0], location[1])
+        print(f"Finding Hourly forecast for {location[0]}...")
         hourly_interval_forecast(coordinates)
         get_user_action()
 
@@ -243,7 +244,7 @@ def display_user_home_menu(username):
      General weather Search in any desired location
     """
     print(f"Welcome Back {username}")
-    print(""" 
+    print("""
     \nChoose an option from the menu:
     1. Add Favourite Location.
     2. Search Weather in Favourite Locations.
@@ -255,7 +256,7 @@ def display_user_home_menu(username):
 
     try:
         choice = int(input("Enter Choice:"))
-        if choice not in [1, 2, 3, 4]:
+        if choice not in [1, 2, 3, 4, 5]:
             raise ValueError
     except ValueError:
         print("\nError: Input must be a number between 1-4,please try again")
@@ -268,11 +269,15 @@ def display_user_home_menu(username):
     elif choice == 3:
         location = enter_location()
         coordinates = geocode_location(location[0], location[1])
+        print(f"Finding Hourly forecast for {location[0]}")
         hourly_interval_forecast(coordinates)
     elif choice == 4:
         location = enter_location()
         coordinates = geocode_location(location[0], location[1])
+        print(f"Finding 5 day forecast for {location[0]}")
         five_day_forecast(coordinates)
+    elif choice == 5:
+        user_change_password(username)
 
 
 def enter_location():
@@ -465,6 +470,29 @@ def five_day_forecast(coordinates):
             Humidity -- {humidity} %
             Pressure -- {pressure} hPa
             """)
+
+
+def user_change_password(username):
+
+    current_password_input = input("Enter Current Password: ")
+    
+    cursor.execute("SELECT Password FROM User WHERE username = %s", (username,))
+    current_password = cursor.fetchone()
+
+    if current_password[0] == current_password_input:
+        new_password = input("Enter new password: ")
+        new_password_confirm = input("Confirm new password: ")
+        if new_password == new_password_confirm:
+            cursor.execute(f"UPDATE User SET password = {new_password} WHERE username = {username}; ")
+            conn.commit()
+            print("\nPassword Changed")
+            display_user_home_menu(username)
+        else:
+            print("Passwords do not match, Please Try again")
+            user_change_password(username)
+    else:
+        print("Incorrect Password, Please Try again")
+        user_change_password(username)
 
 
 main()
