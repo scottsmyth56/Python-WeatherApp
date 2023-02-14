@@ -31,12 +31,17 @@ def display_menu():
     choices based on what actions they wish to perform
     """
     print("""
-    *Welcome to Python Weather App*
+    *Welcome to Python Weather App*\n
+    Registered Users can avail of more features such as
+    - Favourite Locations
+    - 5 Day Forecast
+    - Weather Alerts\n
     Choose an option to get started
 
     1. Login
     2. Register
     3. Current Weather Forecast
+    4. Hourly Interval Forecast
 
     """)
     validate_choice()
@@ -49,7 +54,7 @@ def validate_choice():
     """
     try:
         choice = int(input("Enter Choice:"))
-        if choice not in [1, 2, 3]:
+        if choice not in [1, 2, 3, 4]:
             raise ValueError
     except ValueError:
         print("\nError: Input must be a number between 1-3,please try again")
@@ -61,6 +66,43 @@ def validate_choice():
         register_user()
     elif choice == 3:
         display_current_weather()
+    elif choice == 4:
+        location = enter_location()
+        coordinates = geocode_location(location[0], location[1])
+        hourly_interval_forecast(coordinates)
+        get_user_action()
+
+
+def get_user_action():
+    """
+    Recieves user input and determines there
+    next action based on the input making the
+    proper method call for requested action
+    """   
+    print(
+        """
+        Choose an action from the menu
+        1.Return to Main Menu
+        2.Search weather again
+        """)
+
+    try:
+        choice = int(input("Enter Choice:"))
+        if choice not in [1, 2]:
+            raise ValueError
+    except ValueError:
+        print(
+            "\nError: Choice must be either 1 or 2 and" +
+            "not a character, please try again")
+        display_menu()
+
+    if choice == 1:
+        display_menu()
+    elif choice == 2:
+        location = enter_location()
+        coordinates = geocode_location(location[0], location[1])
+        hourly_interval_forecast(coordinates)
+        get_user_action()
 
 
 def login():
@@ -130,6 +172,7 @@ def display_current_weather():
     coordinates = geocode_location(location, country)
     print(f"Finding Current Weather in {location}, {country}")
     current_weather_search(coordinates)
+    display_menu()
 
 
 def current_weather_search(coordinates):
