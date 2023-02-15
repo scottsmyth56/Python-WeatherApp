@@ -18,8 +18,8 @@ def current_weather_search(coordinates):
     url = (
         f"https://api.openweathermap.org/data/3.0/onecall?lat={lat}&lon={lon}"
         f"&exclude=minutely,hourly,daily&units=metric&appid={API_KEY}")
-    res = requests.get(url, timeout=60)
-    data = res.json()
+
+    data = make_request(url)
 
     temperature = data["current"]["temp"]
     wind_speed = data["current"]["wind_speed"]
@@ -48,8 +48,7 @@ def geocode_location(location, country_code):
             f"http://api.openweathermap.org/geo/1.0/direct?q={location},"
             f"{country_code}&limit=1&appid={API_KEY}")
 
-        res = requests.get(url, timeout=60)
-        data = res.json()
+        data = make_request(url)
 
         if len(data) > 0:
             lat = data[0]["lat"]
@@ -73,31 +72,14 @@ def hourly_interval_forecast(coordinates):
     location from user input
     """
 
-    try:
-        lat = coordinates[0]
-        lon = coordinates[1]
-        url = (
-            f"https://api.openweathermap.org/data/3.0/onecall?lat={lat}"
-            f"&lon={lon}&exclude=minutely,daily,current&units=metric"
-            f"&appid={API_KEY}")
+    lat = coordinates[0]
+    lon = coordinates[1]
+    url = (
+        f"https://api.openweathermap.org/data/3.0/onecall?lat={lat}"
+        f"&lon={lon}&exclude=minutely,daily,current&units=metric"
+        f"&appid={API_KEY}")
 
-        res = requests.get(url, timeout=60)
-        res.raise_for_status()
-
-    except requests.exceptions.Timeout:
-        print("Connection to OpenWeatherMap API timed out.")
-        print("Please try again")
-
-    except requests.exceptions.HTTPError as err:
-        print(f"HTTP Error: {err}")
-        print("Please Try Again")
-
-    except requests.exceptions.RequestException as err:
-        print(f"Request Exception: {err}")
-        print("Please Try again")
-
-    data = res.json()
-
+    data = make_request(url)
     hourly_data = data["hourly"][0:12]
 
     for hourly in hourly_data:
@@ -125,30 +107,16 @@ def five_day_forecast(coordinates):
     Displays a 5 day weather forecast for
     the specified location.
     """
-    try:
-        lat = coordinates[0]
-        lon = coordinates[1]
+  
+    lat = coordinates[0]
+    lon = coordinates[1]
 
-        url = (
-            f"https://api.openweathermap.org/data/3.0/onecall?lat={lat}"
-            f"&lon={lon}&exclude=minutely,hourly,current&units=metric"
-            f"&appid={API_KEY}")
-
-        res = requests.get(url, timeout=60)
-    except requests.exceptions.Timeout:
-        print("Connection to OpenWeatherMap API timed out.")
-        print("Please try again")
-
-    except requests.exceptions.HTTPError as err:
-        print(f"HTTP Error: {err}")
-        print("Please Try Again")
-
-    except requests.exceptions.RequestException as err:
-        print(f"Request Exception: {err}")
-        print("Please Try again")
-       
-    data = res.json()
-
+    url = (
+        f"https://api.openweathermap.org/data/3.0/onecall?lat={lat}"
+        f"&lon={lon}&exclude=minutely,hourly,current&units=metric"
+        f"&appid={API_KEY}")
+   
+    data = make_request(url)
     daily_data = data["daily"][0:5]
 
     for day in daily_data:
@@ -175,3 +143,16 @@ def five_day_forecast(coordinates):
             Humidity -- {humidity} %
             Pressure -- {pressure} hPa
             """)
+
+
+def make_request(url):
+    try:
+        response = requests.get(url, timeout=60)
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.Timeout:
+        print("Connection to OpenWeatherMap API timed out.")
+    except requests.exceptions.HTTPError as err:
+        print(f"HTTP Error: {err}")
+    except requests.exceptions.RequestException as err:
+        print(f"Request Exception: {err}")

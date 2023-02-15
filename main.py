@@ -191,13 +191,9 @@ def display_current_weather():
     the user inputs if the input data is valid
     """
 
-    location = input("Enter a Location: ")
-    country = input("""
-    *Enter the country your location is in.
-    For more accurate results enter the country code e.g IE = Ireland.*
-    Enter Country: """)
-    coordinates = weather.geocode_location(location, country)
-    print(f"Finding Current Weather in {location}, {country}")
+    location = enter_location()
+    coordinates = weather.geocode_location(location[0], location[1])
+    print(f"Finding Current Weather in {location[0]}, {location[1]}")
     weather.current_weather_search(coordinates)
     get_user_action(False, "")
 
