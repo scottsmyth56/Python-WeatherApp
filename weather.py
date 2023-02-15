@@ -11,13 +11,16 @@ def current_weather_search(coordinates):
     Makes a call to the OpenweatherMap API
     for current weather data in a specifed location.
     Prints the data to the terminal.
+    Recieves coordinates as argument in a tuple.
+    prints weather data to terminal.
     """
 
     lat = coordinates[0]
     lon = coordinates[1]
     url = (
         f"https://api.openweathermap.org/data/3.0/onecall?lat={lat}&lon={lon}"
-        f"&exclude=minutely,hourly,daily&units=metric&appid={API_KEY}")
+        f"&exclude=minutely,hourly,daily&units=metric&appid={API_KEY}"
+    )
 
     data = make_request(url)
 
@@ -25,16 +28,18 @@ def current_weather_search(coordinates):
     wind_speed = data["current"]["wind_speed"]
     humidity = data["current"]["humidity"]
     pressure = data["current"]["pressure"]
-    summary = data['current']['weather'][0]['main']
-    description = data['current']['weather'][0]['description']
-    print(f"""
+    summary = data["current"]["weather"][0]["main"]
+    description = data["current"]["weather"][0]["description"]
+    print(
+        f"""
     Temperature-- {temperature} °C
     Summary -- {summary}
     Description -- {description}
     Wind Speed -- {wind_speed} m/s
     Humidity -- {humidity} %
     Pressure -- {pressure} hPa
-    """)
+    """
+    )
 
 
 def geocode_location(location, country_code):
@@ -42,11 +47,14 @@ def geocode_location(location, country_code):
     Converts Location by name and Country code to
     Latitude and Longitude Coordinates for use in
     Weather API calls
+    Recives location and country code as arguments
+    Returns coordinates as a tuple.
     """
     try:
         url = (
             f"http://api.openweathermap.org/geo/1.0/direct?q={location},"
-            f"{country_code}&limit=1&appid={API_KEY}")
+            f"{country_code}&limit=1&appid={API_KEY}"
+        )
 
         data = make_request(url)
 
@@ -69,7 +77,9 @@ def hourly_interval_forecast(coordinates):
     Calls to the OpenWeather Map API and
     Displays, weather forecast in hourly intervals.
     Displays it for 12 hours ahead in the desired
-    location from user input
+    location from user input.
+    Recieves Coordinates as a tuple as an argument
+    Returns printed weather data to terminal
     """
 
     lat = coordinates[0]
@@ -77,7 +87,8 @@ def hourly_interval_forecast(coordinates):
     url = (
         f"https://api.openweathermap.org/data/3.0/onecall?lat={lat}"
         f"&lon={lon}&exclude=minutely,daily,current&units=metric"
-        f"&appid={API_KEY}")
+        f"&appid={API_KEY}"
+    )
 
     data = make_request(url)
     hourly_data = data["hourly"][0:12]
@@ -91,14 +102,16 @@ def hourly_interval_forecast(coordinates):
         pressure = hourly["pressure"]
         description = description.title()
 
-        print(f"""
+        print(
+            f"""
             {timestamp.strftime('%H:%M')}:
             {description},
             Temperature -- {temperature} °C
             Wind Speed -- {wind_speed} m/s
             Humidity -- {humidity} %
             Pressure -- {pressure} hPa
-            """)
+            """
+        )
 
 
 def five_day_forecast(coordinates):
@@ -107,15 +120,16 @@ def five_day_forecast(coordinates):
     Displays a 5 day weather forecast for
     the specified location.
     """
-  
+
     lat = coordinates[0]
     lon = coordinates[1]
 
     url = (
         f"https://api.openweathermap.org/data/3.0/onecall?lat={lat}"
         f"&lon={lon}&exclude=minutely,hourly,current&units=metric"
-        f"&appid={API_KEY}")
-   
+        f"&appid={API_KEY}"
+    )
+
     data = make_request(url)
     daily_data = data["daily"][0:5]
 
@@ -131,7 +145,8 @@ def five_day_forecast(coordinates):
         pressure = day["pressure"]
         description = description.title()
 
-        print(f"""
+        print(
+            f"""
             {timestamp.strftime('%A')}:
             {description},
             Temperature:
@@ -142,10 +157,15 @@ def five_day_forecast(coordinates):
             Wind Speed -- {wind_speed} m/s
             Humidity -- {humidity} %
             Pressure -- {pressure} hPa
-            """)
+            """
+        )
 
 
 def make_request(url):
+    """
+    Recieves url string as argument and returns
+    the json response from the api call
+    """
     try:
         response = requests.get(url, timeout=60)
         response.raise_for_status()

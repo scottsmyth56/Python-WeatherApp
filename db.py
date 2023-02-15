@@ -9,18 +9,18 @@ conn = mysql.connector.connect(
     user=config.USER,
     password=config.PASSWORD,
     port=config.PORT,
-    database=config.NAME
-    )
+    database=config.NAME,
+)
 
 cursor = conn.cursor()
 
 
 def login():
     """
-     Checks for existing user in database, if user is
-     found, the user enters password and logs in.
-     If the user doesn't exist error message is displayed
-     prompting the user to try again or register.
+    Checks for existing user in database, if user is
+    found, the user enters password and logs in.
+    If the user doesn't exist error message is displayed
+    prompting the user to try again or register.
     """
 
     username = input("Enter your username: ")
@@ -31,7 +31,8 @@ def login():
         input_password = input("Enter your password: ")
         print("Checking Credentials..")
         cursor.execute(
-            "SELECT PASSWORD FROM User WHERE username = %s", (username,))
+            "SELECT PASSWORD FROM User"
+            " WHERE username = %s", (username,))
         user_password = cursor.fetchone()
         if input_password == user_password[0]:
             print("Login Successfull")
@@ -62,7 +63,8 @@ def register_user():
         password = input("Enter a password: ")
         cursor.execute(
             "INSERT INTO User (username, password) VALUES (%s, %s)",
-            (username, password))
+            (username, password),
+        )
         conn.commit()
         print(f"{username} registered succesfully")
         main.display_user_home_menu(username)
@@ -74,11 +76,13 @@ def add_favourite_location(username):
     so they can easily search the weather forecast in those
     locations instead of searching again
     """
-    print("""
+    print(
+        """
     Enter Location and the  Location Country  to save as favourite location.
     For Better Results add the Country Code instead of Full Country Name.
     e.g ( IE = Ireland)
-    """)
+    """
+    )
 
     location = input("Enter Location: ")
     country = input("Enter Country or Country Code: ")
@@ -92,9 +96,10 @@ def add_favourite_location(username):
 
     try:
         cursor.execute(
-                "INSERT INTO Locations (username, location, Lat, Lon)" +
-                "VALUES (%s, %s, %s, %s)",
-                (username, location, lat, lon))
+            "INSERT INTO Locations (username, location, Lat, Lon)"
+            + "VALUES (%s, %s, %s, %s)",
+            (username, location, lat, lon),
+        )
         conn.commit()
         print(f"{location} in {country} was added to favourites succesfully")
 
@@ -110,39 +115,48 @@ def view_favourite_location_weather(username):
     """
     cursor.execute(
         "SELECT Location, Lat, Lon FROM Locations" +
-        " WHERE username = %s", (username,))
+        " WHERE username = %s", (username,)
+    )
     fav_locations = cursor.fetchall()
 
     if len(fav_locations) <= 0:
-        print("""
+        print(
+            """
         You have no saved locations.
-        Please add favourite locations to use this quick search feature""")
+        Please add favourite locations to use this quick search feature"""
+        )
         main.display_user_home_menu(username)
     else:
         print("Select a location:")
         for i, loc in enumerate(fav_locations):
             print(f"{i+1}. {loc[0]}")
 
-        selected_index = int(input(
-            "Enter the number of the location" +
-            " you want to see the weather for: ")) - 1
+        selected_index = (
+            int(input(
+                    "Enter the number of the location"
+                    + " you want to see the weather for: "
+                )) - 1
+        )
         selected_location = fav_locations[selected_index]
         coordinates = (selected_location[1], selected_location[2])
 
         try:
-            choice = int(input("""
+            choice = int(input(
+                """
                 *Choose Your Desired Forecast*
                 1. Hourly Forecast for 12 Hours.
                 2. 5 Day Forecast.
-            """))
+                """
+                ))
 
             if choice not in [1, 2]:
                 raise ValueError
 
         except ValueError:
             print(
-                "\nError: Your Choice must be either" +
-                "1 or 2 and not a character,please try again")
+                "\nError: Your Choice must be either"
+                + "1 or 2 and not a character,please try again"
+            )
             view_favourite_location_weather(username)
 
         if choice == 1:
@@ -172,7 +186,8 @@ def user_change_password(username):
         if new_password == new_password_confirm:
             cursor.execute(
                 f"UPDATE User SET password = {new_password}"
-                f" WHERE username = {username}; ")
+                f" WHERE username = {username}; "
+            )
             conn.commit()
             print("\nPassword Changed")
             main.display_user_home_menu(username)
