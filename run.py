@@ -206,7 +206,7 @@ def display_current_weather():
     coordinates = geocode_location(location, country)
     print(f"Finding Current Weather in {location}, {country}")
     current_weather_search(coordinates)
-    get_user_action()
+    get_user_action(False, "")
 
 
 def current_weather_search(coordinates):
@@ -284,12 +284,13 @@ def display_user_home_menu(username):
     3. Current Weather Data with hourly interval.
     4. 5 Day Forecast.
     5. Change Password.
+    6. Logout
 
     """)
 
     try:
         choice = int(input("Enter Choice:"))
-        if choice not in [1, 2, 3, 4, 5]:
+        if choice not in [1, 2, 3, 4, 5, 6]:
             raise ValueError
     except ValueError:
         print("\nError: Input must be a number between 1-4,please try again")
@@ -297,22 +298,26 @@ def display_user_home_menu(username):
 
     if choice == 1:
         add_favourite_location(username)
+        get_user_action(True, username)
     elif choice == 2:
         view_favourite_location_weather(username)
+        get_user_action(True, username)
     elif choice == 3:
         location = enter_location()
         coordinates = geocode_location(location[0], location[1])
         print(f"Finding Hourly forecast for {location[0]}")
         hourly_interval_forecast(coordinates)
+        get_user_action(True, username)
     elif choice == 4:
         location = enter_location()
         coordinates = geocode_location(location[0], location[1])
         print(f"Finding 5 day forecast for {location[0]}")
         five_day_forecast(coordinates)
-        get_logged_in_user_action()
+        get_user_action(True, username)
     elif choice == 5:
         user_change_password(username)
-
+    elif choice == 6:
+        display_menu()
 
 def enter_location():
     """
@@ -531,6 +536,7 @@ def user_change_password(username):
     else:
         print("Incorrect Password, Please Try again")
         user_change_password(username)
+
 
 
 
