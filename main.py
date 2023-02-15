@@ -19,6 +19,7 @@ def display_menu():
     2. Register
     3. Current Weather Forecast
     4. Hourly Interval Forecast
+    5. Exit Program
 
     """
     )
@@ -32,7 +33,7 @@ def validate_choice():
     """
     try:
         choice = int(input("Enter Choice:\n"))
-        if choice not in [1, 2, 3, 4]:
+        if choice not in [1, 2, 3, 4, 5]:
             raise ValueError
     except ValueError:
         print("\nError: Input must be a number between 1-3,please try again")
@@ -50,6 +51,9 @@ def validate_choice():
         print(f"Finding Hourly forecast for {location[0]}...")
         weather.hourly_interval_forecast(coordinates)
         get_user_action(False, "")
+    elif choice == 5:
+        print("Exiting Program..")
+        exit()
 
 
 def get_user_action(logged_in, username):
@@ -66,12 +70,13 @@ def get_user_action(logged_in, username):
             Choose an action from the menu
             1.Return to Main Menu
             2.Search weather again
+            3.Exit Program
             """
         )
 
         try:
             choice = int(input("Enter Choice:\n"))
-            if choice not in [1, 2]:
+            if choice not in [1, 2, 3]:
                 raise ValueError
         except ValueError:
             print(
@@ -87,6 +92,9 @@ def get_user_action(logged_in, username):
             coordinates = weather.geocode_location(location[0], location[1])
             weather.hourly_interval_forecast(coordinates)
             get_user_action(False, "")
+        elif choice == 3:
+            print("Exiting Program")
+            exit()
     else:
         print(
             """
@@ -94,12 +102,13 @@ def get_user_action(logged_in, username):
             1.Return to Home Menu
             2.Search 5 Day Forecast
             3.Search Hourly Interval Forecast.
+            4. Exit Program
             """
         )
 
         try:
             choice = int(input("Enter Choice:\n"))
-            if choice not in [1, 2, 3]:
+            if choice not in [1, 2, 3, 4]:
                 raise ValueError
         except ValueError:
             print(
@@ -120,6 +129,9 @@ def get_user_action(logged_in, username):
             coordinates = weather.geocode_location(location[0], location[1])
             weather.hourly_interval_forecast(coordinates)
             get_user_action(True, username)
+        elif choice == 4:
+            print("Exiting Program..")
+            exit()
 
 
 def display_user_home_menu(username):
@@ -140,13 +152,14 @@ def display_user_home_menu(username):
     4. 5 Day Forecast.
     5. Change Password.
     6. Logout.
+    7. Exit Program
 
     """
     )
 
     try:
         choice = int(input("Enter Choice:\n"))
-        if choice not in [1, 2, 3, 4, 5, 6]:
+        if choice not in [1, 2, 3, 4, 5, 6, 7]:
             raise ValueError
     except ValueError:
         print("\nError: Input must be a number between 1-4,please try again")
@@ -175,6 +188,9 @@ def display_user_home_menu(username):
     elif choice == 6:
         print("Logging out..")
         display_menu()
+    elif choice == 7:
+        print("Exiting Program..")
+        exit()
 
 
 def enter_location():
@@ -184,12 +200,17 @@ def enter_location():
     """
 
     location = input("Enter a Location:\n")
+    if len(location) == 0:
+        print("Location cannot be empty,Please Try again")
+        enter_location()
     country = input(
         """
-    Enter the country your location is in.
-    For more accurate results enter the country code e.g IE = Ireland.
-    Enter Country:\n"""
-    )
+        Enter the country your location is in.
+        For more accurate results enter the country code e.g IE = Ireland.
+        Enter Country:\n""")
+    if len(country) == 0:
+        print("Country cannot be empty,Please Try again")
+        enter_location()
 
     location_tuple = (location, country)
     return location_tuple
