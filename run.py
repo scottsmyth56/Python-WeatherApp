@@ -71,39 +71,72 @@ def validate_choice():
         coordinates = geocode_location(location[0], location[1])
         print(f"Finding Hourly forecast for {location[0]}...")
         hourly_interval_forecast(coordinates)
-        get_user_action()
+        get_user_action(False, "")
 
 
-def get_user_action():
+def get_user_action(logged_in, username):
     """
     Recieves user input and determines there
-    next action based on the input making the
-    proper method call for requested action
-    """   
-    print(
-        """
-        Choose an action from the menu
-        1.Return to Main Menu
-        2.Search weather again
-        """)
-
-    try:
-        choice = int(input("Enter Choice:"))
-        if choice not in [1, 2]:
-            raise ValueError
-    except ValueError:
+    next action based on the input and if the
+    user is logged in or not making the
+    proper method call for requested action/
+    """
+    if logged_in is False:
         print(
-            "\nError: Choice must be either 1 or 2 and" +
-            "not a character, please try again")
-        display_menu()
+            """
+            Choose an action from the menu
+            1.Return to Main Menu
+            2.Search weather again
+            """)
 
-    if choice == 1:
-        display_menu()
-    elif choice == 2:
-        location = enter_location()
-        coordinates = geocode_location(location[0], location[1])
-        hourly_interval_forecast(coordinates)
-        get_user_action()
+        try:
+            choice = int(input("Enter Choice:"))
+            if choice not in [1, 2]:
+                raise ValueError
+        except ValueError:
+            print(
+                "\nError: Choice must be either 1 or 2 and" +
+                "not a character, please try again")
+            display_menu()
+
+        if choice == 1:
+            display_menu()
+        elif choice == 2:
+            location = enter_location()
+            coordinates = geocode_location(location[0], location[1])
+            hourly_interval_forecast(coordinates)
+            get_user_action(False, "")
+    else:
+        print(
+            """
+            Choose an action from the menu
+            1.Return to Home Menu
+            2.Search 5 Day Forecast
+            3.Search Hourly Interval Forecast.
+            """)
+
+        try:
+            choice = int(input("Enter Choice:"))
+            if choice not in [1, 2, 3]:
+                raise ValueError
+        except ValueError:
+            print(
+                "\nError: Choice must be either 1, 2 or 3 and" +
+                "not a character, please try again")
+            display_user_home_menu(username)
+
+        if choice == 1:
+            display_user_home_menu(username)
+        elif choice == 2:
+            location = enter_location()
+            coordinates = geocode_location(location[0], location[1])
+            five_day_forecast(coordinates)
+            get_user_action(True, username)
+        elif choice == 3:
+            location = enter_location()
+            coordinates = geocode_location(location[0], location[1])
+            hourly_interval_forecast(coordinates)
+            get_user_action(True, username)
 
 
 def login():
@@ -173,7 +206,7 @@ def display_current_weather():
     coordinates = geocode_location(location, country)
     print(f"Finding Current Weather in {location}, {country}")
     current_weather_search(coordinates)
-    display_menu()
+    get_user_action()
 
 
 def current_weather_search(coordinates):
@@ -276,6 +309,7 @@ def display_user_home_menu(username):
         coordinates = geocode_location(location[0], location[1])
         print(f"Finding 5 day forecast for {location[0]}")
         five_day_forecast(coordinates)
+        get_logged_in_user_action()
     elif choice == 5:
         user_change_password(username)
 
@@ -473,7 +507,11 @@ def five_day_forecast(coordinates):
 
 
 def user_change_password(username):
-
+    """
+    Allows the user to change their login password,
+    User's must confirm their current password to change
+    to a new password.
+    """
     current_password_input = input("Enter Current Password: ")
     
     cursor.execute("SELECT Password FROM User WHERE username = %s", (username,))
@@ -493,6 +531,7 @@ def user_change_password(username):
     else:
         print("Incorrect Password, Please Try again")
         user_change_password(username)
+
 
 
 main()
