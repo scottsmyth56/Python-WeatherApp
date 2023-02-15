@@ -23,12 +23,12 @@ def login():
     prompting the user to try again or register.
     """
 
-    username = input("Enter your username: ")
+    username = input("Enter your username:\n")
     cursor.execute("SELECT * FROM User WHERE username = %s", (username,))
     result = cursor.fetchone()
 
     if result:
-        input_password = input("Enter your password: ")
+        input_password = input("Enter your password:\n")
         print("Checking Credentials..")
         cursor.execute(
             "SELECT PASSWORD FROM User"
@@ -52,7 +52,7 @@ def register_user():
     If user doesn't exist, the user is registered on the system
     """
 
-    username = input(("Enter a username: "))
+    username = input(("Enter a username:\n"))
     cursor.execute("SELECT * FROM User WHERE username = %s", (username,))
     result = cursor.fetchone()
 
@@ -60,7 +60,7 @@ def register_user():
         print("User already Exists Please Try a Different Username")
         register_user()
     else:
-        password = input("Enter a password: ")
+        password = input("Enter a password:\n")
         cursor.execute(
             "INSERT INTO User (username, password) VALUES (%s, %s)",
             (username, password),
@@ -84,8 +84,8 @@ def add_favourite_location(username):
     """
     )
 
-    location = input("Enter Location: ")
-    country = input("Enter Country or Country Code: ")
+    location = input("Enter Location:\n")
+    country = input("Enter Country or Country Code:\n")
     try:
         coordinates = weather.geocode_location(location, country)
         lat = coordinates[0]
@@ -134,7 +134,7 @@ def view_favourite_location_weather(username):
         selected_index = (
             int(input(
                     "Enter the number of the location"
-                    + " you want to see the weather for: "
+                    + " you want to see the weather for:\n"
                 )) - 1
         )
         selected_location = fav_locations[selected_index]
@@ -145,8 +145,7 @@ def view_favourite_location_weather(username):
                 """
                 *Choose Your Desired Forecast*
                 1. Hourly Forecast for 12 Hours.
-                2. 5 Day Forecast.
-                """
+                2. 5 Day Forecast.\n"""
                 ))
 
             if choice not in [1, 2]:
@@ -173,7 +172,7 @@ def user_change_password(username):
     User's must confirm their current password to change
     to a new password.
     """
-    current_password_input = input("Enter Current Password: ")
+    current_password_input = input("Enter Current Password:\n")
 
     cursor.execute(
         "SELECT Password FROM User"
@@ -181,8 +180,8 @@ def user_change_password(username):
     current_password = cursor.fetchone()
 
     if current_password[0] == current_password_input:
-        new_password = input("Enter new password: ")
-        new_password_confirm = input("Confirm new password: ")
+        new_password = input("Enter new password:\n")
+        new_password_confirm = input("Confirm new password:\n")
         if new_password == new_password_confirm:
             cursor.execute(
                 f"UPDATE User SET password = {new_password}"

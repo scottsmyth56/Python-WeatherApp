@@ -7,7 +7,8 @@ def display_menu():
     Inital Startu menu displayed to user. Giving user
     choices based on what actions they wish to perform
     """
-    print("""
+    print(
+        """
     *Welcome to Python Weather App*\n
     Registered Users can avail of more features such as
     - Favourite Locations
@@ -19,7 +20,8 @@ def display_menu():
     3. Current Weather Forecast
     4. Hourly Interval Forecast
 
-    """)
+    """
+    )
     validate_choice()
 
 
@@ -29,7 +31,7 @@ def validate_choice():
     Calls the requested action based on user choice
     """
     try:
-        choice = int(input("Enter Choice:"))
+        choice = int(input("Enter Choice:\n"))
         if choice not in [1, 2, 3, 4]:
             raise ValueError
     except ValueError:
@@ -64,16 +66,18 @@ def get_user_action(logged_in, username):
             Choose an action from the menu
             1.Return to Main Menu
             2.Search weather again
-            """)
+            """
+        )
 
         try:
-            choice = int(input("Enter Choice:"))
+            choice = int(input("Enter Choice:\n"))
             if choice not in [1, 2]:
                 raise ValueError
         except ValueError:
             print(
-                "\nError: Choice must be either 1 or 2 and" +
-                "not a character, please try again")
+                "\nError: Choice must be either 1 or 2 and"
+                + "not a character, please try again"
+            )
             display_menu()
 
         if choice == 1:
@@ -90,16 +94,18 @@ def get_user_action(logged_in, username):
             1.Return to Home Menu
             2.Search 5 Day Forecast
             3.Search Hourly Interval Forecast.
-            """)
+            """
+        )
 
         try:
-            choice = int(input("Enter Choice:"))
+            choice = int(input("Enter Choice:\n"))
             if choice not in [1, 2, 3]:
                 raise ValueError
         except ValueError:
             print(
-                "\nError: Choice must be either 1, 2 or 3 and" +
-                "not a character, please try again")
+                "\nError: Choice must be either 1, 2 or 3 and"
+                + "not a character, please try again"
+            )
             get_user_action(True, username)
 
         if choice == 1:
@@ -119,13 +125,14 @@ def get_user_action(logged_in, username):
 def display_user_home_menu(username):
 
     """
-     Displays logged in users home menu with
-     choices to add new favourite locations,Search
-     weather in favourite locations, view locations and
-     General weather Search in any desired location
+    Displays logged in users home menu with
+    choices to add new favourite locations,Search
+    weather in favourite locations, view locations and
+    General weather Search in any desired location
     """
     print(f"Welcome Back {username}")
-    print("""
+    print(
+        """
     \nChoose an option from the menu:
     1. Add Favourite Location.
     2. Search Weather in Favourite Locations.
@@ -134,10 +141,11 @@ def display_user_home_menu(username):
     5. Change Password.
     6. Logout.
 
-    """)
+    """
+    )
 
     try:
-        choice = int(input("Enter Choice:"))
+        choice = int(input("Enter Choice:\n"))
         if choice not in [1, 2, 3, 4, 5, 6]:
             raise ValueError
     except ValueError:
@@ -175,11 +183,13 @@ def enter_location():
     from the user and returns them as a tuple
     """
 
-    location = input("Enter a Location: ")
-    country = input("""
-    *Enter the country your location is in.
-    For more accurate results enter the country code e.g IE = Ireland.*
-    Enter Country: """)
+    location = input("Enter a Location:\n")
+    country = input(
+        """
+    Enter the country your location is in.
+    For more accurate results enter the country code e.g IE = Ireland.
+    Enter Country:\n"""
+    )
 
     location_tuple = (location, country)
     return location_tuple
