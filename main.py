@@ -9,7 +9,7 @@ def display_menu():
     """
     print(
         """
-    *Welcome to Python Weather App*\n
+    *Welcome to PyWeather*\n
     Registered Users can avail of more features such as
     - Favourite Locations
     - 5 Day Forecast
