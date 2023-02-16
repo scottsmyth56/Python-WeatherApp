@@ -184,9 +184,10 @@ def user_change_password(username):
         new_password_confirm = input("Confirm new password:\n")
         if new_password == new_password_confirm:
             cursor.execute(
-                f"UPDATE User SET password = {new_password}"
-                f" WHERE username = {username}; "
+               "UPDATE User SET password = %s WHERE username = %s",
+               (new_password, username)
             )
+
             conn.commit()
             print("\nPassword Changed")
             main.display_user_home_menu(username)
