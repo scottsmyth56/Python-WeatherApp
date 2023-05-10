@@ -1,4 +1,8 @@
 
+
+NOTE: APP may not run correctly due to AWS instance being switched off due to unused resources
+
+
 # PyWeather
 Find Hourly and Daily Forecasts in any location with this CLI weather program
 
