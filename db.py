@@ -6,10 +6,11 @@ import main
 
 conn = mysql.connector.connect(
     host=config.HOST,
-    user=config.USER,
-    password=config.PASSWORD,
-    port=config.PORT,
-    database=config.NAME,
+#     user=config.USER,
+#     password=config.PASSWORD,
+#     port=config.PORT,
+#     database=config.NAME,
+# )
 )
 
 cursor = conn.cursor()
