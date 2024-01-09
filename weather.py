@@ -2,8 +2,9 @@ from datetime import datetime
 import requests
 import config
 import main
+import os
 
-API_KEY = config.API_KEY
+API_KEY = os.environ.get("API_KEY")
 
 
 def current_weather_search(coordinates):

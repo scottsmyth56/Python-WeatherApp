@@ -1,24 +1,16 @@
-import mysql.connector
 import weather
 import config
 import main
 import psycopg2
+import os
 
 
-# conn = mysql.connector.connect(
-#     host=config.HOST,
-# #     user=config.USER,
-# #     password=config.PASSWORD,
-# #     port=config.PORT,
-# #     database=config.NAME,
-# # )
-# )
+url = psycopg2.extensions.parse_dsn(os.environ.get('DATABASE_URL'))
 
-conn = psycopg2.connect(
-    host=config.HOST,
-)
+conn = psycopg2.connect(**url)
 
 cursor = conn.cursor()
+
 
 
 def login():
@@ -30,17 +22,15 @@ def login():
     """
 
     username = input("Enter your username:\n")
-    cursor.execute("SELECT * FROM User WHERE username = %s", (username,))
+    cursor.execute("SELECT * FROM \"user\" WHERE username = %s", (username,))
     result = cursor.fetchone()
 
     if result:
         input_password = input("Enter your password:\n")
         print("Checking Credentials..")
-        cursor.execute(
-            "SELECT PASSWORD FROM User"
-            " WHERE username = %s", (username,))
-        user_password = cursor.fetchone()
-        if input_password == user_password[0]:
+        cursor.execute("SELECT * FROM \"user\" WHERE username = %s", (username,))
+        user_password = result[2]
+        if input_password == user_password:
             print("Login Successfull")
             main.display_user_home_menu(username)
         else:
@@ -59,7 +49,9 @@ def register_user():
     """
 
     username = input(("Enter a username:\n"))
-    cursor.execute("SELECT * FROM User WHERE username = %s", (username,))
+    cursor.execute("SELECT * FROM \"user\" WHERE username = %s", (username,))
+
+    #cursor.execute("SELECT * FROM User WHERE username = %s", (username,))
     result = cursor.fetchone()
 
     if result:
@@ -68,7 +60,7 @@ def register_user():
     else:
         password = input("Enter a password:\n")
         cursor.execute(
-            "INSERT INTO User (username, password) VALUES (%s, %s)",
+            "INSERT INTO \"user\" (username, password) VALUES (%s, %s)",
             (username, password),
         )
         conn.commit()
@@ -181,7 +173,7 @@ def user_change_password(username):
     current_password_input = input("Enter Current Password:\n")
 
     cursor.execute(
-        "SELECT Password FROM User"
+        "SELECT Password FROM \"user\""
         " WHERE username = %s", (username,))
     current_password = cursor.fetchone()
 
@@ -190,7 +182,7 @@ def user_change_password(username):
         new_password_confirm = input("Confirm new password:\n")
         if new_password == new_password_confirm:
             cursor.execute(
-               "UPDATE User SET password = %s WHERE username = %s",
+               "UPDATE \"user\" SET password = %s WHERE username = %s",
                (new_password, username)
             )
 
