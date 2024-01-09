@@ -2,15 +2,20 @@ import mysql.connector
 import weather
 import config
 import main
+import psycopg2
 
 
-conn = mysql.connector.connect(
-    host=config.HOST,
-#     user=config.USER,
-#     password=config.PASSWORD,
-#     port=config.PORT,
-#     database=config.NAME,
+# conn = mysql.connector.connect(
+#     host=config.HOST,
+# #     user=config.USER,
+# #     password=config.PASSWORD,
+# #     port=config.PORT,
+# #     database=config.NAME,
+# # )
 # )
+
+conn = psycopg2.connect(
+    host=config.HOST,
 )
 
 cursor = conn.cursor()
